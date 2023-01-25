@@ -1,8 +1,8 @@
-========================
-python3_project_template
-========================
+===============
+fastapi-commons
+===============
 
-This is the documentation of **python3_project_template**.
+This is the documentation of **fastapi-commons**.
 
 .. note::
 
