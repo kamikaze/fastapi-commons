@@ -1,3 +1,4 @@
-Python3 based project
-=====================
+FastAPI commons
+===============
 
+Re-usable code for FastAPI-based projects
