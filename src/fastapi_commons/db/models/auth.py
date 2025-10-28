@@ -1,11 +1,18 @@
 import uuid
 from datetime import datetime
 
-from fastapi_users_db_sqlalchemy import GUID
+from fastapi_users_db_sqlalchemy import GUID, SQLAlchemyBaseUserTableUUID
 from python3_commons.db import Base
 from python3_commons.db.models.common import BaseDBUUIDModel
-from sqlalchemy import DateTime, ForeignKey, String
+from sqlalchemy import BIGINT, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
+
+
+class User(SQLAlchemyBaseUserTableUUID, Base):
+    __tablename__ = 'users'
+
+    username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    group_id: Mapped[int | None] = mapped_column(BIGINT, ForeignKey('user_groups.id'))
 
 
 class ApiKey(BaseDBUUIDModel, Base):
