@@ -1,53 +1,18 @@
 import logging
-from collections.abc import Callable, Coroutine, MutableMapping, Sequence
+from collections.abc import Callable, Coroutine, MutableMapping
 from http import HTTPStatus
 from typing import Annotated, Any, TypeVar
 
-import aiohttp
-import msgspec
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
-
-from fastapi_commons.conf import oidc_settings
+from python3_commons.auth import TokenData, fetch_jwks, fetch_openid_config
+from python3_commons.conf import oidc_settings
 
 logger = logging.getLogger(__name__)
 
-
-class TokenData(msgspec.Struct):
-    sub: str
-    aud: str | Sequence[str]
-    exp: int
-    iss: str
-
-
-T = TypeVar('T', bound=TokenData)
-OIDC_CONFIG_URL = f'{oidc_settings.authority_url}/.well-known/openid-configuration'
 bearer_security = HTTPBearer(auto_error=oidc_settings.enabled)
-
-
-async def fetch_openid_config() -> dict:
-    """
-    Fetch the OpenID configuration (including JWKS URI) from OIDC authority.
-    """
-    async with aiohttp.ClientSession() as session, session.get(OIDC_CONFIG_URL) as response:
-        if response.status != HTTPStatus.OK:
-            raise HTTPException(
-                status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail='Failed to fetch OpenID configuration'
-            )
-
-        return await response.json()
-
-
-async def fetch_jwks(jwks_uri: str) -> dict:
-    """
-    Fetch the JSON Web Key Set (JWKS) for validating the token's signature.
-    """
-    async with aiohttp.ClientSession() as session, session.get(jwks_uri) as response:
-        if response.status != HTTPStatus.OK:
-            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail='Failed to fetch JWKS')
-
-        return await response.json()
+T = TypeVar('T', bound=TokenData)
 
 
 def get_token_verifier[T](
