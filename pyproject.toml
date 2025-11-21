@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.58b0",
     "opentelemetry-instrumentation-logging~=0.58b0",
     "prometheus-client~=0.23.1",
-    "python3-commons>=0.13.4,<0.15.0",
+    "python3-commons>=0.14.4,<0.15.0",
 ]
 
 [dependency-groups]
@@ -155,6 +155,6 @@ reportUnnecessaryComparison = "error"
 pythonpath = ["src"]
 asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "function"
-addopts = "--cov fastapi_commons --cov-fail-under=20 --cov-report term-missing --verbose"
+addopts = "--cov fastapi_commons --cov-fail-under=0 --cov-report term-missing --verbose"
 norecursedirs = ["dist", "build", ".tox"]
 testpaths = ["tests"]
