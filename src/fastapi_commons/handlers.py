@@ -1,24 +1,26 @@
 import logging
+from collections.abc import Callable, Coroutine, Sequence
 from functools import wraps
 from http import HTTPStatus
 from inspect import signature
-from typing import Never
+from typing import Any, Never, TypeVar
 
 from fastapi import HTTPException
 from pydantic_core import ValidationError
 from python3_commons.exceptions import AppError
 
 logger = logging.getLogger(__name__)
+T = TypeVar('T')
 
 
-def _handle_exceptions_helper(status_code, *args) -> Never:
+def _handle_exceptions_helper(status_code: int, *args: Sequence) -> Never:
     if args:
         raise HTTPException(status_code=status_code, detail=args[0])
 
     raise HTTPException(status_code=status_code)
 
 
-def handle_exceptions(func):
+def handle_exceptions[T](func: Callable[..., Coroutine[Any, Any, T]]) -> Callable[..., Coroutine[Any, Any, T]]:
     signature(func)
 
     @wraps(func)
