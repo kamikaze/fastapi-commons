@@ -9,9 +9,11 @@ from jose import JWTError, jwt
 from python3_commons.auth import TokenData, fetch_jwks, fetch_openid_config
 from python3_commons.conf import oidc_settings
 
+from fastapi_commons.conf import api_auth_settings
+
 logger = logging.getLogger(__name__)
 
-bearer_security = HTTPBearer(auto_error=oidc_settings.enabled)
+bearer_security = HTTPBearer(auto_error=api_auth_settings.enabled)
 T = TypeVar('T', bound=TokenData)
 
 
@@ -25,7 +27,7 @@ def get_token_verifier[T](
         """
         Verify the JWT access token using OIDC authority JWKS.
         """
-        if not oidc_settings.enabled:
+        if not api_auth_settings.enabled:
             return None
 
         token = authorization.credentials

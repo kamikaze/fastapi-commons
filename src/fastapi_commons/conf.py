@@ -5,3 +5,6 @@ class ApiAuthSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix='API_AUTH_')
 
     enabled: bool = True
+
+
+api_auth_settings = ApiAuthSettings()
