@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
 
-from fastapi_users_db_sqlalchemy import GUID, SQLAlchemyBaseUserTableUUID
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
+from fastapi_users_db_sqlalchemy.generics import GUID
 from python3_commons.db import Base
 from python3_commons.db.models.common import BaseDBUUIDModel
 from sqlalchemy import BIGINT, DateTime, ForeignKey, String

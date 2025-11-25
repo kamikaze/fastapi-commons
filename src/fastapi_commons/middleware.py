@@ -6,14 +6,13 @@ from prometheus_client.openmetrics.exposition import (
     CONTENT_TYPE_LATEST,
     generate_latest,
 )
-from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Match
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 from starlette.types import ASGIApp
 
-# Define your metrics
 INFO = Gauge('fastapi_app_info', 'FastAPI application information.', ['app_name'])
 REQUESTS = Counter(
     'fastapi_requests_total',
@@ -48,7 +47,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         self.app_name = app_name
         INFO.labels(app_name=self.app_name).inc()
 
-    async def dispatch(self, request: Request, call_next) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         method = request.method
         path, is_handled_path = self.get_path(request)
 
@@ -64,10 +63,11 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         REQUESTS_IN_PROGRESS.labels(**labels).inc()
         REQUESTS.labels(**labels).inc()
         before_time = time.perf_counter()
+        status_code = HTTP_500_INTERNAL_SERVER_ERROR
+
         try:
             response = await call_next(request)
         except BaseException as e:
-            status_code = HTTP_500_INTERNAL_SERVER_ERROR
             EXCEPTIONS.labels(exception_type=type(e).__name__, **labels).inc()
             raise e from None
         else:
@@ -94,7 +94,7 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         return request.url.path, False
 
 
-def metrics(request: Request) -> Response:
+def metrics(_request: Request) -> Response:
     return Response(
         generate_latest(REGISTRY),
         headers={'Content-Type': CONTENT_TYPE_LATEST},

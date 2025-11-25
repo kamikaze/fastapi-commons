@@ -5,7 +5,7 @@ from typing import Annotated, Any, TypeVar
 
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
+from jose import ExpiredSignatureError, JWTError, jwt
 from python3_commons.auth import TokenData, fetch_jwks, fetch_openid_config
 from python3_commons.conf import oidc_settings
 
@@ -45,7 +45,7 @@ def get_token_verifier[T](
                 payload = jwt.decode(token, jwks, algorithms=['RS256'])
 
             token_data = token_cls(**payload)
-        except jwt.ExpiredSignatureError as e:
+        except ExpiredSignatureError as e:
             raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail='Token has expired') from e
         except JWTError as e:
             raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail=f'Token is invalid: {e!s}') from e

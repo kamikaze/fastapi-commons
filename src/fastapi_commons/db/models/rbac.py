@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from fastapi_users_db_sqlalchemy import GUID
+from fastapi_users_db_sqlalchemy.generics import GUID
 from python3_commons.db import Base
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, PrimaryKeyConstraint, String
 from sqlalchemy.dialects.postgresql import UUID

@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Callable, Coroutine, Sequence
+from collections.abc import Callable, Coroutine, Mapping, Sequence
 from functools import wraps
 from http import HTTPStatus
 from inspect import signature
@@ -24,43 +24,45 @@ def handle_exceptions[T](func: Callable[..., Coroutine[Any, Any, T]]) -> Callabl
     signature(func)
 
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    async def wrapper(*args: Sequence, **kwargs: Mapping) -> T:
         try:
-            return await func(*args, **kwargs)
+            result = await func(*args, **kwargs)
         except AppError as e:
             msg = f'Application error: {e!s}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
         except PermissionError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.UNAUTHORIZED, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.UNAUTHORIZED, *e.args)
         except LookupError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.NOT_FOUND, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.NOT_FOUND, *e.args)
         except ValidationError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
         except ConnectionRefusedError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.SERVICE_UNAVAILABLE, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.SERVICE_UNAVAILABLE, *e.args)
         except ValueError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.BAD_REQUEST, *e.args)
+            result = _handle_exceptions_helper(HTTPStatus.BAD_REQUEST, *e.args)
         except NotImplementedError as e:
             msg = f'{type(e)}: {e}'
             logger.exception(msg)
 
-            return _handle_exceptions_helper(HTTPStatus.NOT_IMPLEMENTED)
+            result = _handle_exceptions_helper(HTTPStatus.NOT_IMPLEMENTED)
+
+        return result
 
     return wrapper
