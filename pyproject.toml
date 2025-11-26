@@ -23,7 +23,7 @@ dependencies = [
     "fastapi-users-db-sqlalchemy~=7.0.0",
     "fastapi-users[sqlalchemy]~=15.0.1",
     "msgspec~=0.20.0",
-    "pydantic[email]~=2.12.4",
+    "pydantic[email]~=2.12.5",
     "pydantic-settings~=2.12.0",
     "python-jose==3.5.0",
     "SQLAlchemy==2.0.44",
@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.58b0",
     "opentelemetry-instrumentation-logging~=0.58b0",
     "prometheus-client~=0.23.1",
-    "python3-commons>=0.14.7,<0.15.0",
+    "python3-commons>=0.14.9,<0.15.0",
 ]
 
 [dependency-groups]
