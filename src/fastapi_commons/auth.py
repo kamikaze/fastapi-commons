@@ -49,6 +49,12 @@ def get_token_verifier[T](
             raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail='Token has expired') from e
         except JWTError as e:
             raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail=f'Token is invalid: {e!s}') from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=HTTPStatus.UNAUTHORIZED,
+                detail=f'Could not validate credentials: {e!s}',
+                headers={'WWW-Authenticate': 'Bearer'},
+            ) from e
 
         return token_data
 
