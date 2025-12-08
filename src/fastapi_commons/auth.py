@@ -3,6 +3,7 @@ from collections.abc import Callable, Coroutine, MutableMapping
 from http import HTTPStatus
 from typing import Annotated, Any, TypeVar
 
+import msgspec
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, JWTError, jwt
@@ -24,9 +25,6 @@ def get_token_verifier[T](
     async def get_verified_token(
         authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
     ) -> T | None:
-        """
-        Verify the JWT access token using OIDC authority JWKS.
-        """
         if not api_auth_settings.enabled:
             return None
 
@@ -44,15 +42,16 @@ def get_token_verifier[T](
             else:
                 payload = jwt.decode(token, jwks, algorithms=['RS256'])
 
-            token_data = token_cls(**payload)
+            token_data = msgspec.convert(payload, type=token_cls)
+
         except ExpiredSignatureError as e:
-            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail='Token has expired') from e
+            raise HTTPException(HTTPStatus.UNAUTHORIZED, 'Token has expired') from e
         except JWTError as e:
-            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail=f'Token is invalid: {e!s}') from e
+            raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token is invalid: {e!s}') from e
         except Exception as e:
             raise HTTPException(
-                status_code=HTTPStatus.UNAUTHORIZED,
-                detail=f'Could not validate credentials: {e!s}',
+                HTTPStatus.UNAUTHORIZED,
+                f'Could not validate credentials: {e!s}',
                 headers={'WWW-Authenticate': 'Bearer'},
             ) from e
 
