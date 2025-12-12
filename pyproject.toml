@@ -131,7 +131,9 @@ select = [
     "YTT",
 ]
 ignore = [
-    "ASYNC109",
+    "TC001",
+    "TC002",
+    "TC003", # issues with msgspec.Struct subclasses
 ]
 
 [tool.ruff.lint.per-file-ignores]
