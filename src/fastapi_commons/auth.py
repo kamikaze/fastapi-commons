@@ -37,8 +37,9 @@ def get_token_verifier[T](
                 jwks.clear()
                 jwks.update(_jwks)
 
-            if oidc_settings.client_id:
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=oidc_settings.client_id)
+            if oidc_settings.audience:
+                audience = str(aud[0] if isinstance(aud := oidc_settings.audience, (list, tuple)) else aud)
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience)
             else:
                 payload = jwt.decode(token, jwks, algorithms=['RS256'])
 
