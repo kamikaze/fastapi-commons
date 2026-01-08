@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.60b1",
     "opentelemetry-instrumentation-logging~=0.60b1",
     "prometheus-client~=0.23.1",
-    "python3-commons~=0.14.20",
+    "python3-commons~=0.14.21",
 ]
 
 [dependency-groups]
@@ -154,6 +154,9 @@ venvPath = "."
 venv = ".venv"
 reportMatchNotExhaustive = "error"
 reportUnnecessaryComparison = "error"
+
+[tool.ty.rules]
+unknown-argument = "ignore"  # false positives for Pydantic model fields
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
