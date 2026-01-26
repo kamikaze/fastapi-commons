@@ -792,7 +792,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.12.5" },
     { name = "pydantic-settings", specifier = "~=2.12.0" },
     { name = "python-jose", specifier = "==3.5.0" },
-    { name = "python3-commons", specifier = "~=0.14.23" },
+    { name = "python3-commons", specifier = "~=0.14.24" },
     { name = "sqlalchemy", specifier = "~=2.0.46" },
 ]
 
@@ -1976,7 +1976,7 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.14.23"
+version = "0.14.24"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiobotocore" },
@@ -1990,9 +1990,9 @@ dependencies = [
     { name = "valkey", extra = ["libvalkey"] },
     { name = "zeep" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/21/2b/76503bdaefe1190ca951d6b1e974556fae68fe08c90af7c9ea13dac913b7/python3_commons-0.14.23.tar.gz", hash = "sha256:b65323972360c44cb6d2d5744fa62d95b471aece26d26d4cfb399800c313801e", size = 143858, upload-time = "2026-01-15T09:58:43.81Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/61/ec7500f2963002e6a8ef52196734a2c4abb3abe5c33e32709593e7708a9b/python3_commons-0.14.24.tar.gz", hash = "sha256:ff32d51ea76d5223e9c5a77c943bb8dfe206884d29a2a19f73f7adb5d90c6716", size = 144589, upload-time = "2026-01-26T14:20:23.967Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/db/0e0a34664a5feeaa0c9cf4ef0760efc1b1589ccd302593e11d27cf4fa546/python3_commons-0.14.23-py3-none-any.whl", hash = "sha256:6405ebb89172acdc22f63278a6b5835b0ee330d78679f274248118dcfa789ec2", size = 32875, upload-time = "2026-01-15T09:58:42.639Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/be/6234f77413cd31033a92081f1ab8a890596b35f87a10f05fc0c418f0f4ea/python3_commons-0.14.24-py3-none-any.whl", hash = "sha256:b497843346bbd2c12434826129f590c758785c45cade74dd46b6dfd38203d324", size = 32876, upload-time = "2026-01-26T14:20:22.998Z" },
 ]
 
 [[package]]
