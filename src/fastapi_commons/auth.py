@@ -41,8 +41,7 @@ def get_token_verifier[T](
                 audience = str(aud[0] if isinstance(aud := oidc_settings.audience, (list, tuple)) else aud)
                 payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience)
             else:
-                options = {'verify_aud': False}
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=options)
+                payload = jwt.decode(token, jwks, algorithms=['RS256'])
 
             token_data = msgspec.convert(payload, type=token_cls)
 
@@ -51,9 +50,13 @@ def get_token_verifier[T](
         except JWTError as e:
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token is invalid: {e!s}') from e
         except Exception as e:
+            msg = f'Could not validate credentials: {e!s}'
+
+            logger.exception(msg)
+
             raise HTTPException(
                 HTTPStatus.UNAUTHORIZED,
-                f'Could not validate credentials: {e!s}',
+                msg,
                 headers={'WWW-Authenticate': 'Bearer'},
             ) from e
 
