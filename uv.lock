@@ -498,7 +498,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.12.5" },
     { name = "pydantic-settings", specifier = "~=2.13.1" },
     { name = "python-jose", specifier = "~=3.5.0" },
-    { name = "python3-commons", specifier = "~=0.15.11" },
+    { name = "python3-commons", specifier = "~=0.15.13" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.0.48" },
 ]
 
@@ -843,13 +843,13 @@ wheels = [
 
 [[package]]
 name = "object-storage-client"
-version = "0.0.14"
+version = "0.0.19"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/61/873a336e827a3d4508cfe6e5f8be4591220eb08cc7b0b70d14989d7e8e0c/object_storage_client-0.0.14.tar.gz", hash = "sha256:cc4fe0efa55a1fee778465fd9919d13a0ce96c94e05b34d1c214b8b46169816e", size = 38281, upload-time = "2026-03-06T16:14:48.003Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/65/800546c01213e5a7781790e4191738c88b43b95fb83b613d0e20b2a541d9/object_storage_client-0.0.19.tar.gz", hash = "sha256:222ca4e6a01bd0a8890b5ba92e8dce45bb482906528059c87f262be8461af053", size = 39065, upload-time = "2026-03-09T23:07:16.004Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/93/4577072f83430757b0a49905b58a6f98ab41ce23c0fc56571c51d970de4a/object_storage_client-0.0.14-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:73f541dda7517a8537fca411a25658c0375e4628797afc4045017f0b57936909", size = 1912098, upload-time = "2026-03-06T16:14:55.091Z" },
-    { url = "https://files.pythonhosted.org/packages/2b/4a/4a189540ecf8cebddcd35624b03672f1c1f27c49e231e2f5998f66c872f8/object_storage_client-0.0.14-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c6e0249cd33ce5103d882cdf788810c9de0471264a82ae9e440bd323dfaef9c1", size = 2092904, upload-time = "2026-03-06T16:14:51.738Z" },
-    { url = "https://files.pythonhosted.org/packages/7f/8d/250fbcfcaecb4ed43d5491a8f9019a0943d12d65f0b19d3472b7851f9615/object_storage_client-0.0.14-cp314-cp314-win_amd64.whl", hash = "sha256:dbfd268c9c5905c1c7974168a7920428ba5dadec7bec3b77cec164892f31cba8", size = 2082822, upload-time = "2026-03-06T16:14:50.356Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/40/545c1ff4b6833201730f663c4ad3caa3ae677992999f62a2290eb697693f/object_storage_client-0.0.19-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:19e53194c0bf4aa377c54c5787c49db4f740e21b318ef7fc322692fcaf9448ee", size = 1920528, upload-time = "2026-03-09T23:07:14.425Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/e3/7079a9d1ff66eeada95b7831e48608c0f4fea846d6c3ba7bb132e0b092a3/object_storage_client-0.0.19-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:02fa2499d8d53f59b2d12e0d97836305d1cea236aa1c20c46530b75c087165c8", size = 2101981, upload-time = "2026-03-09T23:07:07.387Z" },
+    { url = "https://files.pythonhosted.org/packages/32/45/d13ebf65d35711425a0b6d0b7e0eefef989cc74dc280fd3594bd2589ef92/object_storage_client-0.0.19-cp314-cp314-win_amd64.whl", hash = "sha256:26878e1aee99b6b5e5b8218982ca9d3dad6b4297a17aedad1804882b0299b0d1", size = 2090163, upload-time = "2026-03-09T23:07:17.078Z" },
 ]
 
 [[package]]
@@ -1410,7 +1410,7 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.15.12"
+version = "0.15.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiobotocore" },
@@ -1425,9 +1425,9 @@ dependencies = [
     { name = "valkey", extra = ["libvalkey"] },
     { name = "zeep" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/ee/a4bc8662f17f7e3492cda99c0e1f4edc8e0bf3be9fcb567cda430b47bdd9/python3_commons-0.15.12.tar.gz", hash = "sha256:43204c9a2797601b76a6c09c688e3f7ee01bf39db7e46287f65b01e13bdfbcee", size = 112748, upload-time = "2026-03-13T16:56:41.198Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/b7/a0535d0b552985caefa182a2f7d83e01f118cc58690d3838186c7849a8fa/python3_commons-0.15.13.tar.gz", hash = "sha256:eaccad51501f52cba0c1d48a871958c74862682d88401c738f095dbccf177a9f", size = 112726, upload-time = "2026-03-13T16:57:40.189Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/f1/1696acf3fa01c329c81b06d9e5b20bf9529ade3b5569f99aedd11db49906/python3_commons-0.15.12-py3-none-any.whl", hash = "sha256:7f68e925b90f81e38e543010c8736f3bace09d50ea4bc3182d4b348c6ceccbaa", size = 37209, upload-time = "2026-03-13T16:56:39.785Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/75/72a00fa76b30b70932313cea6a0a8e010cd0ab697ddd176d39cf8014911a/python3_commons-0.15.13-py3-none-any.whl", hash = "sha256:b02810a46ec5c739d43f16f8a76792f274efdabbfb4c7f1d391e26e15b5eb798", size = 37211, upload-time = "2026-03-13T16:57:38.891Z" },
 ]
 
 [[package]]
