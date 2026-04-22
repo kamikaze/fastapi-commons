@@ -2,7 +2,7 @@ import importlib.metadata
 import logging
 
 from fastapi_commons.instrumentation import setup_opentelemetry
-from fastapi_commons.middleware import PrometheusMiddleware, metrics
+from fastapi_commons.middleware.prometheus import PrometheusMiddleware, metrics
 
 try:
     dist_name = __name__
