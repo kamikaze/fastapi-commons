@@ -3,7 +3,7 @@ import contextvars
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
-from fastapi_project_template.api.helpers import get_client_ip
+from fastapi_commons.helpers import get_client_ip
 
 log_context: contextvars.ContextVar[dict | None] = contextvars.ContextVar('log_context', default=None)
 
