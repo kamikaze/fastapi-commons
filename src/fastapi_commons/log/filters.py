@@ -6,12 +6,12 @@ from fastapi_commons.middleware.log_context import log_context
 
 class LogContextFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        if not (context := log_context.get()):
-            log_context.set({})
-        else:
+        if context := log_context.get():
             for key, value in context.items():
                 if value:
                     setattr(record, key, value)
+        else:
+            log_context.set({})
 
         return True
 
@@ -19,8 +19,7 @@ class LogContextFilter(logging.Filter):
 class CorrelationIDFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         try:
-            correlation_id = correlation_id_ctx.get()
-            if correlation_id:
+            if correlation_id := correlation_id_ctx.get():
                 record.correlation_id = correlation_id
         except LookupError:
             pass

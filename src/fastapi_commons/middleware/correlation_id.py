@@ -9,7 +9,9 @@ correlation_id_ctx: contextvars.ContextVar[str] = contextvars.ContextVar('correl
 
 class CorrelationIDMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        correlation_id = request.headers.get('X-Correlation-ID', str(uuid4()))
+        if (correlation_id := request.headers.get('X-Correlation-ID')) is None:
+            correlation_id = str(uuid4())
+
         correlation_id_ctx.set(correlation_id)
 
         response = await call_next(request)
