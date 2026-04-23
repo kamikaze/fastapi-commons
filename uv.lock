@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.14.4, <3.15.0"
+requires-python = "==3.14.*"
 
 [[package]]
 name = "aiobotocore"
@@ -511,7 +511,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.13.3" },
     { name = "pydantic-settings", specifier = "~=2.14.0" },
     { name = "python-jose", specifier = "~=3.5.0" },
-    { name = "python3-commons", specifier = "~=0.16.7" },
+    { name = "python3-commons", specifier = "~=0.16.8" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.0.49" },
 ]
 
@@ -1411,7 +1411,7 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.16.7"
+version = "0.16.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiobotocore" },
@@ -1426,9 +1426,9 @@ dependencies = [
     { name = "valkey", extra = ["libvalkey"] },
     { name = "zeep" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/9b/6a751b4d21f35d31fc5ba497fd9f236212e4a1de7f77a220bd9e675c6c62/python3_commons-0.16.7.tar.gz", hash = "sha256:ccca30a418fd272a64ec55808827d5643fea20493c491774e15a22d4dd685ad1", size = 111824, upload-time = "2026-04-22T22:59:12.87Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/55/17/c34c2967cfdf2c4aa8f1ec097be7fcc3e40594c1cc453064d2e7f3756514/python3_commons-0.16.8.tar.gz", hash = "sha256:83f88da803444ef9b56e2b9fbf3ad838b989056909205f3e1c902631d979b387", size = 111796, upload-time = "2026-04-23T01:47:20.924Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/0c/208fe363a869196c66c031934c2e964c79391ea842fe5f6de012176ddace/python3_commons-0.16.7-py3-none-any.whl", hash = "sha256:59b1f88747a26b9efa886bc8682323912d6ea14bc173433dc41176d28ec01b19", size = 37936, upload-time = "2026-04-22T22:59:11.36Z" },
+    { url = "https://files.pythonhosted.org/packages/99/96/26343994bbce0b00a34fc2f75003eab9cc2045441d99010dde1acebde247/python3_commons-0.16.8-py3-none-any.whl", hash = "sha256:6c8dfa34bc5a78de9221cd8f416509df388dbc360d67ecf108ec0b280cf6e39e", size = 37938, upload-time = "2026-04-23T01:47:19.362Z" },
 ]
 
 [[package]]
