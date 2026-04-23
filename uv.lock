@@ -470,7 +470,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.13.3" },
     { name = "pydantic-settings", specifier = "~=2.14.0" },
     { name = "python-jose", specifier = "~=3.5.0" },
-    { name = "python3-commons", extras = ["authn"], specifier = "~=0.17.0" },
+    { name = "python3-commons", extras = ["authn"], specifier = "~=0.17.2" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.0.49" },
 ]
 
@@ -1279,16 +1279,15 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.17.0"
+version = "0.17.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msgpack" },
     { name = "msgspec" },
     { name = "pydantic-settings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/13/89/a6dc4cbb3e2e63018d5f076a59a9b73e4e043c314775dd213e3cbc1df36d/python3_commons-0.17.0.tar.gz", hash = "sha256:563dfe9f02a00f9ad3d3ccf1f10d80784c23fec1688837ec412a11bfb30c908c", size = 112478, upload-time = "2026-04-23T15:00:57.51Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/9d/eb9574c71924e41cbb71fc72b5dc8be8baba39f00b834c6b3d4dac60fe15/python3_commons-0.17.0-py3-none-any.whl", hash = "sha256:9ed16c27187a0cda57f581355c1afd5479e08eeb8108b3a3b8c761f94ff3ad1b", size = 38938, upload-time = "2026-04-23T15:00:56.4Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/16/c7272e518bcfc27228fd6f8621b8b4e7fd19da150ab292d428eed02d88f7/python3_commons-0.17.2-py3-none-any.whl", hash = "sha256:b4ad41436483ca4e13578aa5875fbf83f9bb4504c03e0557c012a90d1d826236", size = 38994, upload-time = "2026-04-23T15:57:31.254Z" },
 ]
 
 [package.optional-dependencies]
