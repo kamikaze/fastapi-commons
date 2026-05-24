@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from python3_commons.conf import OIDCSettings
 
 
 class ApiAuthSettings(BaseSettings):
@@ -8,3 +9,4 @@ class ApiAuthSettings(BaseSettings):
 
 
 api_auth_settings = ApiAuthSettings()
+oidc_settings = OIDCSettings()
