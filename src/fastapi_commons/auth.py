@@ -28,7 +28,6 @@ T = TypeVar('T', bound=TokenData)
 
 def get_token_verifier[T](
     token_cls: type[T],
-    jwks: MutableMapping,
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
     async def get_verified_token(
         authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
@@ -36,15 +35,18 @@ def get_token_verifier[T](
         if not api_auth_settings.enabled:
             return None
 
+        logger.debug('Getting token from request')
+
         token = authorization.credentials
 
         try:
-            if not jwks:
-                async with oidc_client as client:
-                    _jwks = await client.get_jwks()
+            logger.debug('Creating OIDC client context')
 
-                jwks.clear()
-                jwks.update(_jwks)
+            async with oidc_client as client:
+                logger.debug('Getting OIDC JWKS')
+                jwks = await client.get_jwks()
+
+            logger.debug('Decoding OIDC token')
 
             if oidc_settings.audience:
                 audience = str(aud[0] if isinstance(aud := oidc_settings.audience, (list, tuple)) else aud)
