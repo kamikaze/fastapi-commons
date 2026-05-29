@@ -28,10 +28,10 @@ JWT_OPTIONS = {'verify_at_hash': False}
 
 
 def get_token_verifier[T](
-        token_cls: type[T],
+    token_cls: type[T],
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
     async def get_verified_token(
-            authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
+        authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
     ) -> T | None:
         if not api_auth_settings.enabled:
             return None
