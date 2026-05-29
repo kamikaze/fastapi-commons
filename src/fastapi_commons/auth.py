@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Callable, Coroutine, MutableMapping
+from collections.abc import Callable, Coroutine
 from http import HTTPStatus
 from typing import Annotated, Any, TypeVar
 
@@ -24,13 +24,14 @@ oidc_client = OIDCClient(
     authority_internal_host=oidc_settings.authority_internal_host,
 )
 T = TypeVar('T', bound=TokenData)
+JWT_OPTIONS = {'verify_at_hash': False}
 
 
 def get_token_verifier[T](
-    token_cls: type[T],
+        token_cls: type[T],
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
     async def get_verified_token(
-        authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
+            authorization: Annotated[HTTPAuthorizationCredentials, Depends(bearer_security)],
     ) -> T | None:
         if not api_auth_settings.enabled:
             return None
@@ -50,9 +51,9 @@ def get_token_verifier[T](
 
             if oidc_settings.audience:
                 audience = str(aud[0] if isinstance(aud := oidc_settings.audience, (list, tuple)) else aud)
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience)
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience, options=JWT_OPTIONS)
             else:
-                payload = jwt.decode(token, jwks, algorithms=['RS256'])
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)
 
             token_data = msgspec.convert(payload, type=token_cls)
 
