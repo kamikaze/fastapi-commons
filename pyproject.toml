@@ -32,7 +32,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.63b1",
     "opentelemetry-instrumentation-logging~=0.63b1",
     "prometheus-client~=0.25.0",
-    "python3-commons[authn]~=0.21.2",
+    "python3-commons[authn]~=0.22.3",
 ]
 
 [dependency-groups]
