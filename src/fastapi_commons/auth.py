@@ -6,7 +6,7 @@ from typing import Annotated, Any, TypeVar
 import msgspec
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import ExpiredSignatureError, JWTError, jwt
+from jose import ExpiredSignatureError, JWSError, JWTError, jwt
 from python3_commons.auth import OIDCClient, TokenData
 
 from fastapi_commons.conf import api_auth_settings, oidc_settings
@@ -41,11 +41,10 @@ def get_token_verifier[T](
         token = authorization.credentials
 
         try:
-            logger.debug('Creating OIDC client context')
-
             async with oidc_client as client:
                 logger.debug('Getting OIDC JWKS')
                 jwks = await client.get_jwks()
+                logger.debug('OIDC JWKS: %s', jwks)
 
             logger.debug('Decoding OIDC token')
 
@@ -55,12 +54,15 @@ def get_token_verifier[T](
             else:
                 payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)
 
-            token_data = msgspec.convert(payload, type=token_cls)
+            logger.debug('Converting OIDC token to %s', token_cls.__name__)
 
+            token_data = msgspec.convert(payload, type=token_cls)
         except ExpiredSignatureError as e:
             raise HTTPException(HTTPStatus.UNAUTHORIZED, 'Token has expired') from e
         except JWTError as e:
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token is invalid: {e!s}') from e
+        except JWSError as e:
+            raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token signature is invalid: {e!s}') from e
         except Exception as e:
             msg = f'Could not validate credentials: {e!s}'
 
