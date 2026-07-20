@@ -1,5 +1,7 @@
 import time
+from collections.abc import Sequence
 
+from fastapi.routing import APIRoute, _IncludedRouter
 from opentelemetry import trace
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram
 from prometheus_client.openmetrics.exposition import (
@@ -9,9 +11,9 @@ from prometheus_client.openmetrics.exposition import (
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette.routing import Match
+from starlette.routing import BaseRoute, Match, Mount
 from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
-from starlette.types import ASGIApp
+from starlette.types import ASGIApp, Scope
 
 INFO = Gauge('fastapi_app_info', 'FastAPI application information.', ['app_name'])
 REQUESTS = Counter(
@@ -39,6 +41,37 @@ REQUESTS_IN_PROGRESS = Gauge(
     'Gauge of requests by method and path currently being processed',
     ['method', 'path', 'app_name'],
 )
+
+
+def _join_paths(prefix: str, path: str) -> str:
+    if not prefix:
+        return path
+    return f'{prefix.rstrip("/")}/{path.lstrip("/")}'
+
+
+def _resolve_route_path(routes: Sequence[BaseRoute], scope: Scope) -> str | None:
+    """Resolve the templated path of the route matching ``scope``."""
+    for route in routes:
+        match, _ = route.matches(scope)
+
+        if match is not Match.FULL:
+            continue
+
+        if isinstance(route, _IncludedRouter):
+            prefix = route.include_context.prefix or ''
+            stripped_path = scope['path'][len(prefix) :]
+            sub_scope = {**scope, 'path': stripped_path} if prefix else scope
+            sub_path = _resolve_route_path(route.original_router.routes, sub_scope)
+
+            if sub_path is not None:
+                return _join_paths(prefix, sub_path)
+
+            continue
+
+        if isinstance(route, (APIRoute, Mount)):
+            return route.path
+
+    return None
 
 
 class PrometheusMiddleware(BaseHTTPMiddleware):
@@ -86,10 +119,8 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
 
     @staticmethod
     def get_path(request: Request) -> tuple[str, bool]:
-        for route in request.app.routes:
-            match, _ = route.matches(request.scope)
-            if match == Match.FULL:
-                return route.path, True
+        if path := _resolve_route_path(request.app.routes, request.scope):
+            return path, True
 
         return request.url.path, False
 
