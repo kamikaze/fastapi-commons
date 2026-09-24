@@ -157,16 +157,16 @@ async def find_item(item_id: int):
 
 Settings can be customized via environment variables:
 
-| Environment Variable | Default | Description |
-|---|---|---|
-| `API_AUTH_ENABLED` | `true` | Enable or disable API authentication enforcement |
-| `OTLP_GRPC_ENDPOINT` | `http://tempo:4317` | OpenTelemetry gRPC collector endpoint |
-| `OIDC_AUTHORITY_URL` | - | OpenID Connect authority / issuer URL |
-| `OIDC_CLIENT_ID` | - | OpenID Connect client ID |
-| `OIDC_CLIENT_SECRET` | - | OpenID Connect client secret |
-| `OIDC_AUDIENCE` | - | Expected token audience |
-| `OIDC_TIMEOUT` | `10.0` | OIDC HTTP request timeout (seconds) |
-| `OIDC_VERIFY_CERT` | `true` | Verify TLS certificates for OIDC requests |
+| Environment Variable | Default             | Description                                      |
+|----------------------|---------------------|--------------------------------------------------|
+| `API_AUTH_ENABLED`   | `true`              | Enable or disable API authentication enforcement |
+| `OTLP_GRPC_ENDPOINT` | `http://tempo:4317` | OpenTelemetry gRPC collector endpoint            |
+| `OIDC_AUTHORITY_URL` | -                   | OpenID Connect authority / issuer URL            |
+| `OIDC_CLIENT_ID`     | -                   | OpenID Connect client ID                         |
+| `OIDC_CLIENT_SECRET` | -                   | OpenID Connect client secret                     |
+| `OIDC_AUDIENCE`      | -                   | Expected token audience                          |
+| `OIDC_TIMEOUT`       | `10.0`              | OIDC HTTP request timeout (seconds)              |
+| `OIDC_VERIFY_CERT`   | `true`              | Verify TLS certificates for OIDC requests        |
 
 ---
 
