@@ -1,16 +1,17 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-dynamic = ["version"]
+version = "0.8.5"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
 ]
 license = "GPL-3.0"
-readme = { file = "README.rst", content-type = "text/x-rst" }
+license-files = ["LICENSE", "AUTHORS.md"]
+readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python"
@@ -38,16 +39,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "build",
-    "pip",
     "pre-commit",
     "pyright",
     "ruff",
-    "setuptools",
-    "setuptools_scm",
     "ty",
     "types-aiobotocore-s3",
-    "wheel",
 ]
 testing = [
     "pytest",
@@ -60,14 +56,9 @@ testing = [
 Homepage = "https://github.com/kamikaze/fastapi-commons"
 Documentation = "https://github.com/kamikaze/fastapi-commons/wiki"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-exclude = ["tests"]
+[tool.uv.build-backend]
+source-include = ["CHANGELOG.md", "tests/**"]
 
-[tool.setuptools_scm]
-
-[tool.bdist_wheel]
-universal = true
 
 [tool.ruff]
 line-length = 120

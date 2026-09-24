@@ -39,11 +39,11 @@ jobs:
         with:
           python-version-file: "pyproject.toml"
 
-      - name: Install build package
-        run: uv pip install --system build setuptools_scm
+      - name: Set version from git tag
+        run: uv version --frozen "${GITHUB_REF_NAME#v}"
 
       - name: Build package
-        run: python -m build
+        run: uv build
 
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
