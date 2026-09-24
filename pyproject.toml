@@ -22,18 +22,18 @@ dependencies = [
     "asyncpg~=0.31.0",
     "fastapi~=0.141.1",
     "msgspec~=0.21.1",
-    "pydantic[email]~=2.13.4",
+    "pydantic[email]~=2.13.5",
     "pydantic-settings~=2.15.0",
     "python-jose~=3.5.0",
-    "SQLAlchemy[asyncio]~=2.0.52",
+    "SQLAlchemy[asyncio]~=2.0.54",
     "opentelemetry-api~=1.44.0",
     "opentelemetry-sdk~=1.44.0",
     "opentelemetry-exporter-otlp~=1.44.0",
     "opentelemetry-instrumentation-fastapi~=0.65b0",
     "opentelemetry-instrumentation-logging~=0.65b0",
     "prometheus-client~=0.26.0",
-    "python3-commons[authn]~=0.24.5",
-    "starlette~=1.6.0",
+    "python3-commons[authn]~=0.24.6",
+    "starlette~=1.7.0",
 ]
 
 [dependency-groups]
