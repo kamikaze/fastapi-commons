@@ -4,12 +4,12 @@ build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.8.5"
+version = "0.8.6"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
 ]
-license = "GPL-3.0"
+license = "GPL-3.0-only"
 license-files = ["LICENSE", "AUTHORS.md"]
 readme = "README.md"
 classifiers = [
@@ -26,10 +26,10 @@ dependencies = [
     "pydantic[email]~=2.13.5",
     "pydantic-settings~=2.15.0",
     "python-jose~=3.5.0",
-    "SQLAlchemy[asyncio]~=2.0.54",
-    "opentelemetry-api~=1.44.0",
-    "opentelemetry-sdk~=1.44.0",
-    "opentelemetry-exporter-otlp~=1.44.0",
+    "SQLAlchemy[asyncio]~=2.1.1",
+    "opentelemetry-api~=1.45.0",
+    "opentelemetry-sdk~=1.45.0",
+    "opentelemetry-exporter-otlp~=1.45.0",
     "opentelemetry-instrumentation-fastapi~=0.65b0",
     "opentelemetry-instrumentation-logging~=0.65b0",
     "prometheus-client~=0.26.0",
