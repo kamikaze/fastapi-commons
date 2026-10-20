@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import Annotated
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest

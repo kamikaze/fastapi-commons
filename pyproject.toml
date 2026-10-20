@@ -1,10 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.12.18,<0.13.0"]
+requires = ["uv_build>=0.13.3,<0.14.0"]
 build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.9.1"
+version = "0.9.2"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
@@ -17,14 +17,14 @@ classifiers = [
     "Programming Language :: Python"
 ]
 keywords = []
-requires-python = ">=3.14.0,<3.16.0"
+requires-python = ">=3.14.8,<3.16.0"
 dependencies = [
     "aiohttp[speedups]>=3.14.5,<3.15.0",
     "asyncpg~=0.32.0",
-    "fastapi~=0.146.0",
+    "fastapi~=0.155.0",
     "msgspec~=0.22.0",
     "pydantic[email]~=2.14.1",
-    "pydantic-settings~=2.16.0",
+    "pydantic-settings~=2.16.1",
     "python-jose~=3.5.0",
     "SQLAlchemy[asyncio]~=2.1.5",
     "opentelemetry-api~=1.45.1",
@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.66b1",
     "opentelemetry-instrumentation-logging~=0.66b1",
     "prometheus-client~=0.26.0",
-    "python3-commons[authn]~=0.26.1",
+    "python3-commons[authn]~=0.26.2",
     "starlette~=1.9.0",
 ]
 
@@ -63,7 +63,7 @@ source-include = ["CHANGELOG.md", "tests/**"]
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py314"
+target-version = "py315"
 
 [tool.ruff.analyze]
 detect-string-imports = true
@@ -139,7 +139,7 @@ indent-style = "space"
 quote-style = "single"
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.15"
 venvPath = "."
 venv = ".venv"
 reportMatchNotExhaustive = "error"
