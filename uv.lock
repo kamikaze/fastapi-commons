@@ -568,7 +568,7 @@ wheels = [
 
 [[package]]
 name = "fastapi"
-version = "0.155.0"
+version = "0.156.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-doc" },
@@ -578,9 +578,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/71/19e43e47822e27837ffbb910512e13c288fea8fc272ee284c36d196bfee7/fastapi-0.155.0.tar.gz", hash = "sha256:4be61b531db8173c535a93d0464b10b34a8f9825be2cec946d23991c1b059e4e", size = 492207, upload-time = "2026-10-20T16:47:12.218Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/e6/0a20e411ef7672fcd6c43bae391f0979fb64e5c91fe31820e052c8d626fa/fastapi-0.156.0.tar.gz", hash = "sha256:f522582abed9988b8503a478c30999dbd622f2c6ebbfd895864cb5dd20be53ed", size = 492339, upload-time = "2026-10-20T17:31:52.578Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/79/09cf6021296c4bad6541ff951cfefe8de9682c6c2025efa5adbb2d596d94/fastapi-0.155.0-py3-none-any.whl", hash = "sha256:c5780556ff1b209cabbc63d045af56ea49cd79583d5bc078e4bf97a0df32fc2d", size = 146658, upload-time = "2026-10-20T16:47:10.248Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/e4/b54f176c7baa88329be30c50cc2a118491168d6692a53fe3a588315b144b/fastapi-0.156.0-py3-none-any.whl", hash = "sha256:bc96f668b0aa423969e56fe21833d0b33a6d40b84d6094e8b12627e44564eb37", size = 146704, upload-time = "2026-10-20T17:31:50.973Z" },
 ]
 
 [[package]]
@@ -625,7 +625,7 @@ testing = [
 requires-dist = [
     { name = "aiohttp", extras = ["speedups"], specifier = ">=3.14.5,<3.15.0" },
     { name = "asyncpg", specifier = "~=0.32.0" },
-    { name = "fastapi", specifier = "~=0.155.0" },
+    { name = "fastapi", specifier = "~=0.156.0" },
     { name = "msgspec", specifier = "~=0.22.0" },
     { name = "opentelemetry-api", specifier = "~=1.45.1" },
     { name = "opentelemetry-exporter-otlp", specifier = "~=1.45.1" },
@@ -636,7 +636,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.14.1" },
     { name = "pydantic-settings", specifier = "~=2.16.1" },
     { name = "python-jose", specifier = "~=3.5.0" },
-    { name = "python3-commons", extras = ["authn"], specifier = "~=0.26.2" },
+    { name = "python3-commons", extras = ["authn"], specifier = "~=0.27.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.1.5" },
     { name = "starlette", specifier = "~=1.9.0" },
 ]
@@ -1829,16 +1829,16 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.26.2"
+version = "0.27.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msgpack" },
     { name = "msgspec" },
     { name = "pydantic-settings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/64/4f/92dbe4ebf16964114d73b555dfb4b7bc4fc3204e448de5fa64a6a58f5692/python3_commons-0.26.2.tar.gz", hash = "sha256:dae69b68bd3ff657d5a37d9bc6d019bd1b09ceba5f58a7176f9c9605c36d8354", size = 187424, upload-time = "2026-10-18T20:27:36.211Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/90/cde195af89bd93b8cc6cb2b069ce1925521d736c479ae2c6769403ff6c91/python3_commons-0.27.0.tar.gz", hash = "sha256:b24fd8faa5b8d607d4a02782ea87352487226d50eb12482dfbdbcda318d8171e", size = 191175, upload-time = "2026-10-20T17:37:21.435Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/bd/f1fd8ff3eb744e4860b4791950287942e53137983e7bc3b0a0b7d51ae505/python3_commons-0.26.2-py3-none-any.whl", hash = "sha256:7dc861caca4515d4af71d70df876aee3ecfe9832df2e622c1107a4b07abe070a", size = 50156, upload-time = "2026-10-18T20:27:34.989Z" },
+    { url = "https://files.pythonhosted.org/packages/92/04/690123ae8712226a18a6ba49d3a38e1ba0c152107a97c2cf7483356668d6/python3_commons-0.27.0-py3-none-any.whl", hash = "sha256:6974c13357825b0c937a6116a7bef94767ce00487a5aaa6008c6627f079513df", size = 49850, upload-time = "2026-10-20T17:37:19.988Z" },
 ]
 
 [package.optional-dependencies]

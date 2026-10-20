@@ -1,7 +1,7 @@
 import logging
 from collections.abc import Callable, Coroutine
 from http import HTTPStatus
-from typing import Annotated, Any, TypeVar
+from typing import Annotated, Any
 
 import msgspec
 from fastapi import Depends, HTTPException
@@ -27,11 +27,10 @@ oidc_client = OIDCClient(
     connection_limit=oidc_settings.connection_limit,
     authority_internal_host=oidc_settings.authority_internal_host,
 )
-T = TypeVar('T', bound=TokenData)
 JWT_OPTIONS = {'verify_at_hash': False}
 
 
-def get_token_verifier[T](
+def get_token_verifier[T: TokenData](
     token_cls: type[T],
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
     async def get_verified_token(
@@ -53,7 +52,7 @@ def get_token_verifier[T](
             logger.debug('Decoding OIDC token')
 
             if oidc_settings.audience:
-                audience = str(aud[0] if isinstance(aud := oidc_settings.audience, (list, tuple)) else aud)
+                audience = aud if isinstance(aud := oidc_settings.audience, str) else aud[0]
                 payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience, options=JWT_OPTIONS)
             else:
                 payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)

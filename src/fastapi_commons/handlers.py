@@ -3,14 +3,13 @@ from collections.abc import Callable, Coroutine, Mapping, Sequence
 from functools import wraps
 from http import HTTPStatus
 from inspect import signature
-from typing import Any, Never, TypeVar
+from typing import Any, Never
 
 from fastapi import HTTPException
 from pydantic_core import ValidationError
 from python3_commons.exceptions import AppError
 
 logger = logging.getLogger(__name__)
-T = TypeVar('T')
 
 
 def _handle_exceptions_helper(status_code: int, *args: Sequence) -> Never:
