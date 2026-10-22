@@ -609,7 +609,7 @@ wheels = [
 
 [[package]]
 name = "fastapi-commons"
-version = "0.10.1"
+version = "0.10.2"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp", extra = ["speedups"] },
@@ -660,7 +660,7 @@ requires-dist = [
     { name = "pydantic", extras = ["email"], specifier = "~=2.14.1" },
     { name = "pydantic-settings", specifier = "~=2.16.1" },
     { name = "python-jose", specifier = "~=3.5.0" },
-    { name = "python3-commons", extras = ["authn"], specifier = "~=0.27.0" },
+    { name = "python3-commons", extras = ["authn"], specifier = "~=0.27.1" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.1.6" },
     { name = "starlette", specifier = "~=1.9.0" },
 ]
@@ -1176,18 +1176,18 @@ wheels = [
 
 [[package]]
 name = "object-storage-client"
-version = "0.1.17"
+version = "0.1.18"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8e/bb/00606c62f5ceacc65a155e0361569b9b6da7fab52f9a19d1dc75b6e9f1ac/object_storage_client-0.1.17.tar.gz", hash = "sha256:96b223788d40752d77d65ba7537a82bcf7fcaea58ad558685647fecb32734e5e", size = 73523, upload-time = "2026-10-20T16:52:19.703Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/5d/c43e0851d0922de3cad51186c0abab78f7a519721b066f964717538063c3/object_storage_client-0.1.18.tar.gz", hash = "sha256:ae25ca9e49a8a0d1e97d958cc9e36e7f7ffe360176e9f7c213e12cf2925d0e8d", size = 73504, upload-time = "2026-10-22T21:17:47.806Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/88/b5/ceb209930e4a91a43a6f78d3283387c3d36cbceb4dd94b29710c3b3aafb2/object_storage_client-0.1.17-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:b4c38ee12f98e44a609d83c2257ddf54a24982035d0caa4e46d1124251910b77", size = 2947816, upload-time = "2026-10-20T16:52:07.906Z" },
-    { url = "https://files.pythonhosted.org/packages/56/e4/2d2d9c60d793e2a416e1b5bce1284a9b0dfdedc49e61a29913abf2fde21d/object_storage_client-0.1.17-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:82a389073f654d72707d1cd59fabf4a44c81eb57196056d62616b9b415f2246d", size = 4043785, upload-time = "2026-10-20T16:52:09.642Z" },
-    { url = "https://files.pythonhosted.org/packages/04/65/b0d094ca0fceb22656ecd79d393448e9e97fbbfed441822f8c36f8d76523/object_storage_client-0.1.17-cp314-cp314-manylinux_2_28_aarch64.whl", hash = "sha256:22fa727f0335a48c7fbd7ac65b8a7e2b185852e56c78b2bc61203391a42ceec5", size = 3780280, upload-time = "2026-10-20T16:52:10.905Z" },
-    { url = "https://files.pythonhosted.org/packages/56/db/fffc978607aeb52efdb473164ca8051a36382f17de3fdcfc40421cc781a4/object_storage_client-0.1.17-cp314-cp314-win_amd64.whl", hash = "sha256:5ec6ca40b1df644417dad06d9e146b86d1824e15b6306bcd30d93bbef5e48593", size = 3553816, upload-time = "2026-10-20T16:52:12.501Z" },
-    { url = "https://files.pythonhosted.org/packages/af/66/c6d4005fd864591e9e82b529e6209980e8adb20f91be3f93a55d53bf41e6/object_storage_client-0.1.17-cp315-cp315-macosx_11_0_arm64.whl", hash = "sha256:fdcd567ba1215ea7e6fce50452daf28a602dcb5ec85b64cc7546b47e360c6246", size = 2947868, upload-time = "2026-10-20T16:52:14.151Z" },
-    { url = "https://files.pythonhosted.org/packages/1d/cd/61f08bb30ec3690eefe9a9b824f121b1d848362ef296bcb868f87b832fc5/object_storage_client-0.1.17-cp315-cp315-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7cfcbcc391af85a5edc5d3b0f3ba1197559a6fcffa17557c4affb5fd2d887c14", size = 4043390, upload-time = "2026-10-20T16:52:15.524Z" },
-    { url = "https://files.pythonhosted.org/packages/21/62/4d1e3d4613a1391978b956d18653883ae12c3e8649f484c7102bdb72e136/object_storage_client-0.1.17-cp315-cp315-manylinux_2_28_aarch64.whl", hash = "sha256:513374c2d8d1e48855fdf08c9080e381f88f318147856838a575e70be09c2650", size = 3780020, upload-time = "2026-10-20T16:52:16.969Z" },
-    { url = "https://files.pythonhosted.org/packages/56/c4/adca1203e124b073ba717b5a598ba12f9b2482fdecb3476679116b5daff8/object_storage_client-0.1.17-cp315-cp315-win_amd64.whl", hash = "sha256:d3c2dd32f35c533cd4df90dd6e790c1b9d506494319295cb685117575dce07b6", size = 3553131, upload-time = "2026-10-20T16:52:18.451Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/ac/4818cdf6db4cb6f02b38699242c54fecf8967318ba184d7aa1cc1b4d6320/object_storage_client-0.1.18-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:3cb371f8bae6693055a4eac7778030e3c46ba452c0547fe7e99dde9bce19605b", size = 2947394, upload-time = "2026-10-22T21:17:34.958Z" },
+    { url = "https://files.pythonhosted.org/packages/86/84/5d7da32b324bdcbe314e272ff6d2b927d8a1284bb61e8137d850084cb620/object_storage_client-0.1.18-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b4b6c39dd9bee677f157dd87610cda7790175d7c0aaa23442f274377b816ed97", size = 4042521, upload-time = "2026-10-22T21:17:36.868Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/2a/4130c22bf26c147f48d16dc956dd115655463aa8ed666cbf388e797d3042/object_storage_client-0.1.18-cp314-cp314-manylinux_2_28_aarch64.whl", hash = "sha256:143e4a9c146d9852820af551d3edabbcc94e48251c19f831c415a5ccef5e7389", size = 3779709, upload-time = "2026-10-22T21:17:38.709Z" },
+    { url = "https://files.pythonhosted.org/packages/82/18/8f0eaf14a7ce63cdb2326959b61ea05fa83f0561d8783a7d072c62d88381/object_storage_client-0.1.18-cp314-cp314-win_amd64.whl", hash = "sha256:cc723fffd837b168db589b9e2278be720c79a7b78f83a9c661b930059a65265a", size = 3552248, upload-time = "2026-10-22T21:17:40.218Z" },
+    { url = "https://files.pythonhosted.org/packages/58/8e/78e6ba0ac1a1a7d6b77f802904825f77edddb405bc1bf5fafcf62ce34b7a/object_storage_client-0.1.18-cp315-cp315-macosx_11_0_arm64.whl", hash = "sha256:5e03a60e5a39338619842cd912854ebb92e375c05de87c2512d92f22198d45cf", size = 2947463, upload-time = "2026-10-22T21:17:41.791Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/65/b055472132f492d776c44f9a576a7228c0102ad5acc424c92c0b0c9aaa46/object_storage_client-0.1.18-cp315-cp315-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:af5cfb514ab3679dd639f0ad5843770081db656127cfc2caf8fa43c9cf0d62be", size = 4042193, upload-time = "2026-10-22T21:17:43.379Z" },
+    { url = "https://files.pythonhosted.org/packages/ae/6a/1dc41ba5f3c79c76bcb75f90bc6ab0bb0c6f3920013f33c740f31468f3e9/object_storage_client-0.1.18-cp315-cp315-manylinux_2_28_aarch64.whl", hash = "sha256:edb3558e8b2051206c93dc65d7560f3726ccf50ed635e74e496b6b5f4aae5fb7", size = 3779653, upload-time = "2026-10-22T21:17:45.075Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/23/5a98f3b233660d01e00cba96100959d3f4aa788a302f4c7f69b69afbcf3f/object_storage_client-0.1.18-cp315-cp315-win_amd64.whl", hash = "sha256:fd277de00bf47a7d6cad9f24b82dad8cc9dea257c70b2b3e7d69df8e52a5c1d1", size = 3552546, upload-time = "2026-10-22T21:17:46.566Z" },
 ]
 
 [[package]]
@@ -1853,16 +1853,16 @@ wheels = [
 
 [[package]]
 name = "python3-commons"
-version = "0.27.0"
+version = "0.27.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msgpack" },
     { name = "msgspec" },
     { name = "pydantic-settings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/90/cde195af89bd93b8cc6cb2b069ce1925521d736c479ae2c6769403ff6c91/python3_commons-0.27.0.tar.gz", hash = "sha256:b24fd8faa5b8d607d4a02782ea87352487226d50eb12482dfbdbcda318d8171e", size = 191175, upload-time = "2026-10-20T17:37:21.435Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d5/00/6f132b932083379f60e0d012fe412f2dc3494a5228d8595e2af98461f43e/python3_commons-0.27.1.tar.gz", hash = "sha256:d8680351e3c1752f2034571bcf4ba849e42273d156faea3bf84f5e57be577b04", size = 191479, upload-time = "2026-10-22T22:04:19.291Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/04/690123ae8712226a18a6ba49d3a38e1ba0c152107a97c2cf7483356668d6/python3_commons-0.27.0-py3-none-any.whl", hash = "sha256:6974c13357825b0c937a6116a7bef94767ce00487a5aaa6008c6627f079513df", size = 49850, upload-time = "2026-10-20T17:37:19.988Z" },
+    { url = "https://files.pythonhosted.org/packages/77/5b/4f91eda24b10d8244367e48e40cab18607db80c026c6d023fb6812740dd6/python3_commons-0.27.1-py3-none-any.whl", hash = "sha256:c87ef366950691a628667002705838ad8f7d821ea72f3ca1068b65c9ba8f060b", size = 49850, upload-time = "2026-10-22T22:04:17.911Z" },
 ]
 
 [package.optional-dependencies]

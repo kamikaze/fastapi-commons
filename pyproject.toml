@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.10.2"
+version = "0.10.3"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.66b1",
     "opentelemetry-instrumentation-logging~=0.66b1",
     "prometheus-client~=0.26.0",
-    "python3-commons[authn]~=0.27.0",
+    "python3-commons[authn]~=0.27.1",
     "starlette~=1.9.0",
 ]
 
