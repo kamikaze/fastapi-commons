@@ -16,24 +16,24 @@ classifiers = [
     "Programming Language :: Python"
 ]
 keywords = []
-requires-python = ">=3.13.9,<3.15.0"
+requires-python = ">=3.15.0,<3.16.0"
 dependencies = [
-    "aiohttp[speedups]>=3.13.3,<3.15.0",
-    "asyncpg~=0.31.0",
+    "aiohttp[speedups]>=3.14.5,<3.15.0",
+    "asyncpg~=0.32.0",
     "fastapi-users-db-sqlalchemy~=7.0.0",
-    "fastapi-users[sqlalchemy]~=15.0.3",
-    "msgspec~=0.20.0",
-    "pydantic[email]~=2.12.5",
-    "pydantic-settings~=2.12.0",
+    "fastapi-users[sqlalchemy]~=15.0.5",
+    "msgspec~=0.22.0",
+    "pydantic[email]~=2.14.1",
+    "pydantic-settings~=2.16.1",
     "python-jose~=3.5.0",
-    "SQLAlchemy[asyncio]~=2.0.46",
-    "opentelemetry-api~=1.39.1",
-    "opentelemetry-sdk~=1.39.1",
-    "opentelemetry-exporter-otlp~=1.39.1",
-    "opentelemetry-instrumentation-fastapi~=0.60b1",
-    "opentelemetry-instrumentation-logging~=0.60b1",
-    "prometheus-client~=0.24.1",
-    "python3-commons~=0.14.24",
+    "SQLAlchemy[asyncio]~=2.0.55",
+    "opentelemetry-api~=1.45.1",
+    "opentelemetry-sdk~=1.45.1",
+    "opentelemetry-exporter-otlp~=1.45.1",
+    "opentelemetry-instrumentation-fastapi~=0.66b1",
+    "opentelemetry-instrumentation-logging~=0.66b1",
+    "prometheus-client~=0.26.0",
+    "python3-commons~=0.27.0",
 ]
 
 [dependency-groups]
@@ -41,7 +41,6 @@ dev = [
     "build",
     "pip",
     "pre-commit",
-    "pyrefly",
     "pyright",
     "ruff",
     "setuptools",
@@ -73,7 +72,7 @@ universal = true
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py314"
+target-version = "py315"
 
 [tool.ruff.analyze]
 detect-string-imports = true
@@ -149,7 +148,7 @@ indent-style = "space"
 quote-style = "single"
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.15"
 venvPath = "."
 venv = ".venv"
 reportMatchNotExhaustive = "error"
