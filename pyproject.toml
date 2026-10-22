@@ -1,10 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.13.4,<0.14.0"]
+requires = ["uv_build>=0.13.5,<0.14.0"]
 build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.10.1"
+version = "0.10.2"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
@@ -21,7 +21,7 @@ requires-python = ">=3.14.8,<3.16.0"
 dependencies = [
     "aiohttp[speedups]>=3.14.5,<3.15.0",
     "asyncpg~=0.32.0",
-    "fastapi~=0.159.1",
+    "fastapi~=0.161.0",
     "msgspec~=0.22.0",
     "pydantic[email]~=2.14.1",
     "pydantic-settings~=2.16.1",
