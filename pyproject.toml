@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.10.3"
+version = "0.10.4"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
@@ -17,11 +17,11 @@ classifiers = [
     "Programming Language :: Python"
 ]
 keywords = []
-requires-python = ">=3.14.8,<3.16.0"
+requires-python = ">=3.14.9,<3.16.0"
 dependencies = [
     "aiohttp[speedups]>=3.14.5,<3.15.0",
     "asyncpg~=0.32.0",
-    "fastapi~=0.161.0",
+    "fastapi~=0.162.0",
     "msgspec~=0.22.0",
     "pydantic[email]~=2.14.1",
     "pydantic-settings~=2.16.1",
@@ -33,7 +33,7 @@ dependencies = [
     "opentelemetry-instrumentation-fastapi~=0.66b1",
     "opentelemetry-instrumentation-logging~=0.66b1",
     "prometheus-client~=0.26.0",
-    "python3-commons[authn]~=0.27.1",
+    "python3-commons[authn]~=0.27.2",
     "starlette~=1.9.0",
 ]
 
