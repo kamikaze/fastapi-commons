@@ -1,8 +1,12 @@
+import importlib
 import importlib.metadata
 import logging
+from typing import TYPE_CHECKING
 
-from fastapi_commons.instrumentation import setup_opentelemetry
 from fastapi_commons.middleware.prometheus import PrometheusMiddleware, metrics
+
+if TYPE_CHECKING:
+    from fastapi_commons.instrumentation import setup_opentelemetry
 
 try:
     dist_name = __name__
@@ -26,3 +30,16 @@ class EndpointFilter(logging.Filter):
 
 # Filter out /endpoint
 logging.getLogger('uvicorn.access').addFilter(EndpointFilter())
+
+
+def __getattr__(name: str) -> object:
+    """
+    setup_opentelemetry is imported on first access: its OpenTelemetry SDK and OTLP gRPC exporter (~30 MB) are not
+    loaded by services that use only other parts of the package
+    """
+    if name == 'setup_opentelemetry':
+        return importlib.import_module('fastapi_commons.instrumentation').setup_opentelemetry
+
+    msg = f'module {__name__!r} has no attribute {name!r}'
+
+    raise AttributeError(msg)
