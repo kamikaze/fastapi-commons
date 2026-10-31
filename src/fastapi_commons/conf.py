@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from python3_commons.conf import OIDCSettings
 
@@ -8,5 +9,11 @@ class ApiAuthSettings(BaseSettings):
     enabled: bool = True
 
 
+class TokenVerificationSettings(OIDCSettings):
+    """OIDC settings with the ones of the token verifier"""
+
+    leeway: int = Field(default=0, ge=0)  # allowed clock skew for exp and nbf, seconds
+
+
 api_auth_settings = ApiAuthSettings()
-oidc_settings = OIDCSettings()
+oidc_settings = TokenVerificationSettings()
