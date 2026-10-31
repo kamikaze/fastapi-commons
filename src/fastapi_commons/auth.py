@@ -3,6 +3,7 @@ from collections.abc import Callable, Coroutine
 from http import HTTPStatus
 from typing import Annotated, Any
 
+import aiohttp
 import msgspec
 from fastapi import Depends, HTTPException
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -66,6 +67,13 @@ def get_token_verifier[T: TokenData](
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token is invalid: {e!s}') from e
         except JWSError as e:
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token signature is invalid: {e!s}') from e
+        # Provider not reachable: network, timeouts, 5xx and 429 answers (ConnectionError, InterruptedError)
+        except (OSError, aiohttp.ClientError) as e:
+            msg = 'OIDC provider is not available'
+
+            logger.exception(msg)
+
+            raise HTTPException(HTTPStatus.SERVICE_UNAVAILABLE, msg) from e
         except Exception as e:
             msg = f'Could not validate credentials: {e!s}'
 
