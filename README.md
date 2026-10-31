@@ -32,7 +32,9 @@ Common utilities, middleware, security, and observability helpers for production
 
 ### 4. Authentication & Authorization
 - **OIDC Token Verification (`get_token_verifier`)**:
-  - Validates Bearer JWT tokens against OpenID Connect (OIDC) JSON Web Key Sets (JWKS) via RS256.
+  - Validates Bearer JWT tokens against OpenID Connect (OIDC) JSON Web Key Sets (JWKS) via RS256: signature, `exp`, `nbf`, `iat` (with optional leeway) and, when configured, `iss` and `aud` (any of several audiences).
+  - Refreshes the cached JWKS when a token is signed by an unknown key (`kid`), e.g. after a key rotation of the provider; at most once per `OIDC_JWKS_REFRESH_INTERVAL`.
+  - Answers `503 Service Unavailable` when the OIDC provider cannot be reached, `401 Unauthorized` for invalid tokens.
   - Deserializes and validates token claims into custom models using `msgspec`.
   - Can be toggled via environment settings (`API_AUTH_ENABLED`).
 - **Database API Key Verification (`get_api_key_verifier`)**:
@@ -164,7 +166,10 @@ Settings can be customized via environment variables:
 | `OIDC_AUTHORITY_URL` | -                   | OpenID Connect authority / issuer URL            |
 | `OIDC_CLIENT_ID`     | -                   | OpenID Connect client ID                         |
 | `OIDC_CLIENT_SECRET` | -                   | OpenID Connect client secret                     |
-| `OIDC_AUDIENCE`      | -                   | Expected token audience                          |
+| `OIDC_AUDIENCE`      | -                   | Expected token audience; comma separated: any of them; empty: not checked |
+| `OIDC_ISSUER`        | -                   | Expected token issuer (`iss`); empty: not checked |
+| `OIDC_LEEWAY`        | `0`                 | Allowed clock skew for `exp`, `nbf`, `iat` (seconds) |
+| `OIDC_JWKS_REFRESH_INTERVAL` | `60.0`      | Min seconds between JWKS refreshes on an unknown `kid` |
 | `OIDC_TIMEOUT`       | `10.0`              | OIDC HTTP request timeout (seconds)              |
 | `OIDC_VERIFY_CERT`   | `true`              | Verify TLS certificates for OIDC requests        |
 

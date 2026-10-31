@@ -1,12 +1,15 @@
 import logging
-from collections.abc import Callable, Coroutine
+from collections.abc import Callable, Coroutine, Mapping, Sequence
 from http import HTTPStatus
+from time import monotonic
 from typing import Annotated, Any
 
+import aiohttp
 import msgspec
 from fastapi import Depends, HTTPException
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, JWSError, JWTError, jwt
+from jose.exceptions import JWTClaimsError
 from python3_commons.auth import OIDCClient, TokenData
 from python3_commons.db.models.auth import ApiKey
 from sqlalchemy import select
@@ -27,7 +30,79 @@ oidc_client = OIDCClient(
     connection_limit=oidc_settings.connection_limit,
     authority_internal_host=oidc_settings.authority_internal_host,
 )
-JWT_OPTIONS = {'verify_at_hash': False}
+JWT_ALGORITHMS = ['RS256']
+# Errors of reaching the OIDC provider: network, timeouts, 5xx and 429 answers (ConnectionError, InterruptedError)
+PROVIDER_ERRORS = (OSError, aiohttp.ClientError)
+
+
+class JwksRefreshGuard:
+    """Allows a JWKS refresh on an unknown kid at most once per interval: random kids do not flood the provider"""
+
+    def __init__(self, interval: float) -> None:
+        self._interval = interval
+        self._refreshed_at: float | None = None
+
+    def allow(self) -> bool:
+        now = monotonic()
+
+        if self._refreshed_at is not None and now - self._refreshed_at < self._interval:
+            return False
+
+        self._refreshed_at = now
+
+        return True
+
+
+jwks_refresh_guard = JwksRefreshGuard(oidc_settings.jwks_refresh_interval)
+
+
+def key_ids(jwks: Mapping[str, Any]) -> set[str]:
+    return {kid for key in jwks.get('keys', ()) if (kid := key.get('kid'))}
+
+
+async def get_signing_keys(token: str) -> dict[str, Any]:
+    """
+    JWKS of the provider; refreshed before the cache expires when the token is signed by a key not in it (key
+    rotation)
+    """
+    jwks = await oidc_client.get_jwks()
+    kid = jwt.get_unverified_header(token).get('kid')
+
+    if kid and kid not in key_ids(jwks) and jwks_refresh_guard.allow():
+        logger.info('Token key %s is not in OIDC JWKS, refreshing it', kid)
+        jwks = await oidc_client.get_jwks(force_refresh=True)
+
+    return jwks
+
+
+def configured_audiences(audience: Sequence[str] | str | None) -> tuple[str, ...]:
+    """Audiences of the setting without empty values: an empty OIDC_AUDIENCE is read as ('',)"""
+    audiences = (audience,) if isinstance(audience, str) else (audience or ())
+
+    return tuple(aud for aud in audiences if aud)
+
+
+def check_audience(payload: Mapping[str, Any], audiences: Sequence[str]) -> None:
+    """The token is for one of the audiences (several: e.g. while clients are switched); none - not checked"""
+    if not audiences:
+        return
+
+    aud = payload.get('aud')
+    token_audiences = {aud} if isinstance(aud, str) else set(aud or ())
+
+    if not token_audiences.intersection(audiences):
+        msg = 'Invalid audience'
+
+        raise JWTClaimsError(msg)
+
+
+def decode_token(token: str, jwks: Mapping[str, Any]) -> dict[str, Any]:
+    """Claims of a token with a valid signature, exp, nbf, iat and, when configured, iss and aud"""
+    options = {'verify_at_hash': False, 'verify_aud': False, 'leeway': oidc_settings.leeway}
+    payload = jwt.decode(token, jwks, algorithms=JWT_ALGORITHMS, issuer=oidc_settings.issuer or None, options=options)
+    check_audience(payload, configured_audiences(oidc_settings.audience))
+
+    return payload
 
 
 def get_token_verifier[T: TokenData](
@@ -44,18 +119,13 @@ def get_token_verifier[T: TokenData](
         token = authorization.credentials
 
         try:
-            async with oidc_client as client:
-                logger.debug('Getting OIDC JWKS')
-                jwks = await client.get_jwks()
-                logger.debug('OIDC JWKS: %s', jwks)
+            logger.debug('Getting OIDC JWKS')
+
+            jwks = await get_signing_keys(token)
 
             logger.debug('Decoding OIDC token')
 
-            if oidc_settings.audience:
-                audience = aud if isinstance(aud := oidc_settings.audience, str) else aud[0]
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience, options=JWT_OPTIONS)
-            else:
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)
+            payload = decode_token(token, jwks)
 
             logger.debug('Converting OIDC token to %s', token_cls.__name__)
 
@@ -66,6 +136,12 @@ def get_token_verifier[T: TokenData](
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token is invalid: {e!s}') from e
         except JWSError as e:
             raise HTTPException(HTTPStatus.UNAUTHORIZED, f'Token signature is invalid: {e!s}') from e
+        except PROVIDER_ERRORS as e:
+            msg = 'OIDC provider is not available'
+
+            logger.exception(msg)
+
+            raise HTTPException(HTTPStatus.SERVICE_UNAVAILABLE, msg) from e
         except Exception as e:
             msg = f'Could not validate credentials: {e!s}'
 
