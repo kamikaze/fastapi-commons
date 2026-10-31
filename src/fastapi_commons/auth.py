@@ -1,5 +1,5 @@
 import logging
-from collections.abc import Callable, Coroutine
+from collections.abc import Callable, Coroutine, Sequence
 from http import HTTPStatus
 from typing import Annotated, Any
 
@@ -30,6 +30,13 @@ oidc_client = OIDCClient(
 JWT_OPTIONS = {'verify_at_hash': False}
 
 
+def configured_audiences(audience: Sequence[str] | str | None) -> tuple[str, ...]:
+    """Audiences of the setting without empty values: an empty OIDC_AUDIENCE is read as ('',)"""
+    audiences = (audience,) if isinstance(audience, str) else (audience or ())
+
+    return tuple(aud for aud in audiences if aud)
+
+
 def get_token_verifier[T: TokenData](
     token_cls: type[T],
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
@@ -51,11 +58,12 @@ def get_token_verifier[T: TokenData](
 
             logger.debug('Decoding OIDC token')
 
-            if oidc_settings.audience:
-                audience = aud if isinstance(aud := oidc_settings.audience, str) else aud[0]
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience, options=JWT_OPTIONS)
+            if audiences := configured_audiences(oidc_settings.audience):
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audiences[0], options=JWT_OPTIONS)
             else:
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)
+                # Not configured - not checked: python-jose rejects a token with an aud claim when no audience is given
+                options = {**JWT_OPTIONS, 'verify_aud': False}
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=options)
 
             logger.debug('Converting OIDC token to %s', token_cls.__name__)
 
