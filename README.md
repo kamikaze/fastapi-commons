@@ -164,7 +164,7 @@ Settings can be customized via environment variables:
 | `OIDC_AUTHORITY_URL` | -                   | OpenID Connect authority / issuer URL            |
 | `OIDC_CLIENT_ID`     | -                   | OpenID Connect client ID                         |
 | `OIDC_CLIENT_SECRET` | -                   | OpenID Connect client secret                     |
-| `OIDC_AUDIENCE`      | -                   | Expected token audience                          |
+| `OIDC_AUDIENCE`      | -                   | Expected token audience; empty: not checked      |
 | `OIDC_TIMEOUT`       | `10.0`              | OIDC HTTP request timeout (seconds)              |
 | `OIDC_VERIFY_CERT`   | `true`              | Verify TLS certificates for OIDC requests        |
 
