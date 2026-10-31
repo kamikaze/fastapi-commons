@@ -1,19 +1,21 @@
+import importlib
 import logging
 from collections.abc import Callable, Coroutine
 from http import HTTPStatus
-from typing import Annotated, Any
+from typing import TYPE_CHECKING, Annotated, Any
 
 import msgspec
 from fastapi import Depends, HTTPException
-from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import ExpiredSignatureError, JWSError, JWTError, jwt
 from python3_commons.auth import OIDCClient, TokenData
-from python3_commons.db.models.auth import ApiKey
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
 
 from fastapi_commons.conf import api_auth_settings, oidc_settings
+
+if TYPE_CHECKING:
+    from fastapi_commons.api_keys import get_api_key_verifier
+
+__all__ = ['bearer_security', 'get_api_key_verifier', 'get_token_verifier', 'oidc_client']
 
 logger = logging.getLogger(__name__)
 
@@ -82,24 +84,11 @@ def get_token_verifier[T: TokenData](
     return get_verified_token
 
 
-def get_api_key_verifier(
-    db_dependency: Callable[..., AsyncSession], header_name: str = 'Api-Key'
-) -> Callable[..., Coroutine[Any, Any, ApiKey]]:
-    async def verify_api_key(
-        api_key: Annotated[str, Depends(APIKeyHeader(name=header_name, auto_error=True))],
-        session: Annotated[AsyncSession, Depends(db_dependency)],
-    ) -> ApiKey:
-        stmt = select(ApiKey).where(ApiKey.uid == api_key)
-        result = await session.execute(stmt)
-        api_key_obj = result.scalar_one_or_none()
+def __getattr__(name: str) -> object:
+    """get_api_key_verifier moved to fastapi_commons.api_keys: imported on use, not with the token verifier"""
+    if name == 'get_api_key_verifier':
+        return importlib.import_module('fastapi_commons.api_keys').get_api_key_verifier
 
-        if not api_key_obj:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail='Invalid API Key',
-                headers={'WWW-Authenticate': 'Api-Key'},
-            )
+    msg = f'module {__name__!r} has no attribute {name!r}'
 
-        return api_key_obj
-
-    return verify_api_key
+    raise AttributeError(msg)

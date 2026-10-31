@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from python3_commons.db.models.auth import ApiKey
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi_commons.auth import get_api_key_verifier
+from fastapi_commons.api_keys import get_api_key_verifier
 
 
 @pytest.mark.asyncio
