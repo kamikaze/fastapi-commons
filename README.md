@@ -33,6 +33,7 @@ Common utilities, middleware, security, and observability helpers for production
 ### 4. Authentication & Authorization
 - **OIDC Token Verification (`get_token_verifier`)**:
   - Validates Bearer JWT tokens against OpenID Connect (OIDC) JSON Web Key Sets (JWKS) via RS256.
+  - Refreshes the cached JWKS when a token is signed by an unknown key (`kid`), e.g. after a key rotation of the provider; at most once per `OIDC_JWKS_REFRESH_INTERVAL`.
   - Deserializes and validates token claims into custom models using `msgspec`.
   - Can be toggled via environment settings (`API_AUTH_ENABLED`).
 - **Database API Key Verification (`get_api_key_verifier`)**:
@@ -167,6 +168,7 @@ Settings can be customized via environment variables:
 | `OIDC_AUDIENCE`      | -                   | Expected token audience                          |
 | `OIDC_TIMEOUT`       | `10.0`              | OIDC HTTP request timeout (seconds)              |
 | `OIDC_VERIFY_CERT`   | `true`              | Verify TLS certificates for OIDC requests        |
+| `OIDC_JWKS_REFRESH_INTERVAL` | `60.0`      | Min seconds between JWKS refreshes on an unknown `kid` |
 
 ---
 
