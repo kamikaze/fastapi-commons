@@ -8,5 +8,11 @@ class ApiAuthSettings(BaseSettings):
     enabled: bool = True
 
 
+class TokenVerificationSettings(OIDCSettings):
+    """OIDC settings with the ones of the token verifier"""
+
+    issuer: str | None = None  # expected iss claim; not checked when empty
+
+
 api_auth_settings = ApiAuthSettings()
-oidc_settings = OIDCSettings()
+oidc_settings = TokenVerificationSettings()
