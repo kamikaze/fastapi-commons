@@ -51,11 +51,15 @@ def get_token_verifier[T: TokenData](
 
             logger.debug('Decoding OIDC token')
 
+            issuer = oidc_settings.issuer or None  # empty: not checked
+
             if oidc_settings.audience:
                 audience = aud if isinstance(aud := oidc_settings.audience, str) else aud[0]
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], audience=audience, options=JWT_OPTIONS)
+                payload = jwt.decode(
+                    token, jwks, algorithms=['RS256'], audience=audience, issuer=issuer, options=JWT_OPTIONS
+                )
             else:
-                payload = jwt.decode(token, jwks, algorithms=['RS256'], options=JWT_OPTIONS)
+                payload = jwt.decode(token, jwks, algorithms=['RS256'], issuer=issuer, options=JWT_OPTIONS)
 
             logger.debug('Converting OIDC token to %s', token_cls.__name__)
 
