@@ -36,8 +36,9 @@ Common utilities, middleware, security, and observability helpers for production
   - Allows a clock skew of `OIDC_LEEWAY` seconds for `exp` and `nbf`.
   - Deserializes and validates token claims into custom models using `msgspec`.
   - Can be toggled via environment settings (`API_AUTH_ENABLED`).
-- **Database API Key Verification (`get_api_key_verifier`)**:
+- **Database API Key Verification (`fastapi_commons.api_keys.get_api_key_verifier`)**:
   - FastAPI dependency for validating API keys from request headers against database records using SQLAlchemy async sessions.
+  - Importing it registers the `api_keys` table of python3-commons; the token verifier (`fastapi_commons.auth`) does not import any database models. `fastapi_commons.auth.get_api_key_verifier` still works and imports it on first use.
 
 ### 5. Exception Handling
 - **`@handle_exceptions`**: Decorator for endpoint functions and handlers that catches common application errors and maps them to standard HTTP exceptions:
