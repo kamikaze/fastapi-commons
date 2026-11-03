@@ -44,10 +44,10 @@ def get_token_verifier[T: TokenData](
         token = authorization.credentials
 
         try:
-            async with oidc_client as client:
-                logger.debug('Getting OIDC JWKS')
-                jwks = await client.get_jwks()
-                logger.debug('OIDC JWKS: %s', jwks)
+            # Not "async with oidc_client": its exit closes the HTTP session shared by all requests
+            logger.debug('Getting OIDC JWKS')
+            jwks = await oidc_client.get_jwks()
+            logger.debug('OIDC JWKS: %s', jwks)
 
             logger.debug('Decoding OIDC token')
 
