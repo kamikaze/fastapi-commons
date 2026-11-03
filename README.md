@@ -33,6 +33,7 @@ Common utilities, middleware, security, and observability helpers for production
 ### 4. Authentication & Authorization
 - **OIDC Token Verification (`get_token_verifier`)**:
   - Validates Bearer JWT tokens against OpenID Connect (OIDC) JSON Web Key Sets (JWKS) via RS256.
+  - Checks the issuer (`iss`) when `OIDC_ISSUER` is set.
   - Allows a clock skew of `OIDC_LEEWAY` seconds for `exp` and `nbf`.
   - Deserializes and validates token claims into custom models using `msgspec`.
   - Can be toggled via environment settings (`API_AUTH_ENABLED`).
@@ -169,6 +170,7 @@ Settings can be customized via environment variables:
 | `OIDC_TIMEOUT`       | `10.0`              | OIDC HTTP request timeout (seconds)              |
 | `OIDC_VERIFY_CERT`   | `true`              | Verify TLS certificates for OIDC requests        |
 | `OIDC_LEEWAY`        | `0`                 | Allowed clock skew for `exp`, `nbf` (seconds) |
+| `OIDC_ISSUER`        | -                   | Expected token issuer (`iss`); empty: not checked |
 
 ---
 
