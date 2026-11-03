@@ -34,6 +34,7 @@ Common utilities, middleware, security, and observability helpers for production
 - **OIDC Token Verification (`get_token_verifier`)**:
   - Validates Bearer JWT tokens against OpenID Connect (OIDC) JSON Web Key Sets (JWKS) via RS256.
   - Allows a clock skew of `OIDC_LEEWAY` seconds for `exp` and `nbf`.
+  - Answers `503 Service Unavailable` when the OIDC provider cannot be reached, `401 Unauthorized` for invalid tokens.
   - Deserializes and validates token claims into custom models using `msgspec`.
   - Can be toggled via environment settings (`API_AUTH_ENABLED`).
 - **Database API Key Verification (`get_api_key_verifier`)**:
