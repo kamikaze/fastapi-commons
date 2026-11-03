@@ -1,6 +1,7 @@
 import logging
-from collections.abc import Callable, Coroutine
+from collections.abc import Callable, Coroutine, Mapping
 from http import HTTPStatus
+from time import monotonic
 from typing import Annotated, Any
 
 import msgspec
@@ -30,6 +31,46 @@ oidc_client = OIDCClient(
 JWT_OPTIONS = {'verify_at_hash': False}
 
 
+class JwksRefreshGuard:
+    """Allows a JWKS refresh on an unknown kid at most once per interval: random kids do not flood the provider"""
+
+    def __init__(self, interval: float) -> None:
+        self._interval = interval
+        self._refreshed_at: float | None = None
+
+    def allow(self) -> bool:
+        now = monotonic()
+
+        if self._refreshed_at is not None and now - self._refreshed_at < self._interval:
+            return False
+
+        self._refreshed_at = now
+
+        return True
+
+
+jwks_refresh_guard = JwksRefreshGuard(oidc_settings.jwks_refresh_interval)
+
+
+def key_ids(jwks: Mapping[str, Any]) -> set[str]:
+    return {kid for key in jwks.get('keys', ()) if (kid := key.get('kid'))}
+
+
+async def get_signing_keys(client: OIDCClient, token: str) -> dict[str, Any]:
+    """
+    JWKS of the provider; refreshed before the cache expires when the token is signed by a key not in it (key
+    rotation)
+    """
+    jwks = await client.get_jwks()
+    kid = jwt.get_unverified_header(token).get('kid')
+
+    if kid and kid not in key_ids(jwks) and jwks_refresh_guard.allow():
+        logger.info('Token key %s is not in OIDC JWKS, refreshing it', kid)
+        jwks = await client.get_jwks(force_refresh=True)
+
+    return jwks
+
+
 def get_token_verifier[T: TokenData](
     token_cls: type[T],
 ) -> Callable[[HTTPAuthorizationCredentials], Coroutine[Any, Any, T | None]]:
@@ -46,7 +87,7 @@ def get_token_verifier[T: TokenData](
         try:
             async with oidc_client as client:
                 logger.debug('Getting OIDC JWKS')
-                jwks = await client.get_jwks()
+                jwks = await get_signing_keys(client, token)
                 logger.debug('OIDC JWKS: %s', jwks)
 
             logger.debug('Decoding OIDC token')
