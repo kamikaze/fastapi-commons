@@ -1,19 +1,26 @@
-import contextvars
+from starlette.requests import HTTPConnection
+from starlette.types import ASGIApp, Receive, Scope, Send
 
-from fastapi import Request, Response
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-
+from fastapi_commons.context import log_context
 from fastapi_commons.helpers import get_client_ip
 
-log_context: contextvars.ContextVar[dict | None] = contextvars.ContextVar('log_context', default=None)
+__all__ = ('LogContextMiddleware',)
 
 
-class LogContextMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        context = {
-            'client_ip': get_client_ip(request),
-        }
+class LogContextMiddleware:
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
 
-        log_context.set(context)
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope['type'] not in ('http', 'websocket'):
+            await self.app(scope, receive, send)
 
-        return await call_next(request)
+            return
+
+        ip = get_client_ip(HTTPConnection(scope))
+        token = log_context.set({'client_ip': ip} if ip is not None else {})
+
+        try:
+            await self.app(scope, receive, send)
+        finally:
+            log_context.reset(token)

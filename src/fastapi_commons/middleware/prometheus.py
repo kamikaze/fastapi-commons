@@ -1,19 +1,24 @@
 import time
-from collections.abc import Sequence
+from collections.abc import Collection, Iterable, Sequence
+from typing import Any
 
-from fastapi.routing import APIRoute, _IncludedRouter
-from opentelemetry import trace
+from fastapi.routing import RouteContext, iter_route_contexts
 from prometheus_client import REGISTRY, Counter, Gauge, Histogram
-from prometheus_client.openmetrics.exposition import (
-    CONTENT_TYPE_LATEST,
-    generate_latest,
-)
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from prometheus_client.openmetrics.exposition import CONTENT_TYPE_LATEST, generate_latest
 from starlette.requests import Request
 from starlette.responses import Response
-from starlette.routing import BaseRoute, Match, Mount
-from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
-from starlette.types import ASGIApp, Scope
+from starlette.routing import Match, Mount
+from starlette.types import ASGIApp, Message, Receive, Scope, Send
+
+try:
+    from opentelemetry import trace
+except ImportError:  # OpenTelemetry is optional
+    trace = None
+
+__all__ = ['PrometheusMiddleware', 'metrics']
+
+UNMATCHED_PATH = '<unmatched>'
+DEFAULT_EXCLUDED_PATHS = ('/metrics', '/docs', '/docs/oauth2-redirect', '/redoc', '/openapi.json')
 
 INFO = Gauge('fastapi_app_info', 'FastAPI application information.', ['app_name'])
 REQUESTS = Counter(
@@ -43,86 +48,122 @@ REQUESTS_IN_PROGRESS = Gauge(
 )
 
 
-def _join_paths(prefix: str, path: str) -> str:
-    if not prefix:
-        return path
-    return f'{prefix.rstrip("/")}/{path.lstrip("/")}'
+def _join(prefix: str, path: str) -> str:
+    return f'{prefix}{path}' if path != '/' or not prefix else prefix
 
 
-def _resolve_route_path(routes: Sequence[BaseRoute], scope: Scope) -> str | None:
-    """Resolve the templated path of the route matching ``scope``."""
-    for route in routes:
-        match, _ = route.matches(scope)
+def _resolve_template(routes: Iterable[Any], scope: Scope) -> str | None:
+    """Return the route template matching ``scope`` (first full match, else first partial), or None."""
+    partial: tuple[Any, Scope] | None = None
 
-        if match is not Match.FULL:
-            continue
+    for context in iter_route_contexts(list(routes)):
+        match, child_scope = context.matches(scope)
 
-        if isinstance(route, _IncludedRouter):
-            prefix = route.include_context.prefix or ''
-            stripped_path = scope['path'][len(prefix) :]
-            sub_scope = {**scope, 'path': stripped_path} if prefix else scope
-            sub_path = _resolve_route_path(route.original_router.routes, sub_scope)
+        if match is Match.FULL:
+            return _template_of(context, scope, child_scope)
 
-            if sub_path is not None:
-                return _join_paths(prefix, sub_path)
+        if match is Match.PARTIAL and partial is None:
+            partial = (context, child_scope)
 
-            continue
-
-        if isinstance(route, (APIRoute, Mount)):
-            return route.path
+    if partial is not None:
+        return _template_of(partial[0], scope, partial[1])
 
     return None
 
 
-class PrometheusMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app: ASGIApp, app_name: str = 'fastapi-app') -> None:
-        super().__init__(app)
+def _template_of(context: RouteContext, scope: Scope, child_scope: Scope) -> str | None:
+    path = context.path
+
+    if path is None:
+        return None
+
+    if isinstance(context.original_route, Mount):
+        inner_routes: Sequence[Any] = getattr(context.original_route, 'routes', None) or []
+
+        if not inner_routes:
+            return path or '/'
+
+        inner = _resolve_template(inner_routes, {**scope, **child_scope})
+
+        return None if inner is None else _join(path, inner)
+
+    return path
+
+
+def _valid_sampled_trace_id() -> str | None:
+    if trace is None:
+        return None
+
+    span_context = trace.get_current_span().get_span_context()
+
+    if not span_context.is_valid or not span_context.trace_flags.sampled:
+        return None
+
+    return trace.format_trace_id(span_context.trace_id)
+
+
+class PrometheusMiddleware:
+    def __init__(
+        self,
+        app: ASGIApp,
+        app_name: str = 'fastapi-app',
+        *,
+        excluded_paths: Collection[str] = DEFAULT_EXCLUDED_PATHS,
+    ) -> None:
+        self.app = app
         self.app_name = app_name
-        INFO.labels(app_name=self.app_name).inc()
+        self.excluded_paths = frozenset(excluded_paths)
+        INFO.labels(app_name=app_name).set(1)
 
-    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        method = request.method
-        path, is_handled_path = self.get_path(request)
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope['type'] != 'http':
+            await self.app(scope, receive, send)
+            return
 
-        if not is_handled_path:
-            return await call_next(request)
+        template = self._get_path(scope)
+        path = template or UNMATCHED_PATH
 
-        labels = {
-            'method': method,
-            'path': path,
-            'app_name': self.app_name,
-        }
+        if (template or scope['path']) in self.excluded_paths:
+            await self.app(scope, receive, send)
+            return
 
-        REQUESTS_IN_PROGRESS.labels(**labels).inc()
+        labels = {'method': scope['method'], 'path': path, 'app_name': self.app_name}
+        status_code: int | None = None
+
+        async def send_wrapper(message: Message) -> None:
+            nonlocal status_code
+
+            if message['type'] == 'http.response.start' and status_code is None:
+                status_code = message['status']
+
+            await send(message)
+
         REQUESTS.labels(**labels).inc()
+        REQUESTS_IN_PROGRESS.labels(**labels).inc()
         before_time = time.perf_counter()
-        status_code = HTTP_500_INTERNAL_SERVER_ERROR
 
         try:
-            response = await call_next(request)
-        except BaseException as e:
+            await self.app(scope, receive, send_wrapper)
+        except Exception as e:
             EXCEPTIONS.labels(exception_type=type(e).__name__, **labels).inc()
-            raise e from None
-        else:
-            status_code = response.status_code
-            after_time = time.perf_counter()
-            # Retrieve trace id for exemplar
-            span = trace.get_current_span()
-            trace_id = trace.format_trace_id(span.get_span_context().trace_id)
-
-            REQUESTS_PROCESSING_TIME.labels(**labels).observe(after_time - before_time, exemplar={'TraceID': trace_id})
+            raise
         finally:
-            RESPONSES.labels(status_code=status_code, **labels).inc()
+            duration = time.perf_counter() - before_time
+            trace_id = _valid_sampled_trace_id()
+            exemplar = {'TraceID': trace_id} if trace_id else None
+            REQUESTS_PROCESSING_TIME.labels(**labels).observe(duration, exemplar=exemplar)
+            RESPONSES.labels(status_code=status_code if status_code is not None else 500, **labels).inc()
             REQUESTS_IN_PROGRESS.labels(**labels).dec()
 
-        return response
-
     @staticmethod
-    def get_path(request: Request) -> tuple[str, bool]:
-        if path := _resolve_route_path(request.app.routes, request.scope):
-            return path, True
+    def _get_path(scope: Scope) -> str | None:
+        app = scope.get('app')
+        routes = getattr(app, 'routes', None)
 
-        return request.url.path, False
+        if not routes:
+            return None
+
+        return _resolve_template(routes, scope)
 
 
 def metrics(_request: Request) -> Response:

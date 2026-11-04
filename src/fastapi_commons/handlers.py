@@ -1,67 +1,50 @@
 import logging
-from collections.abc import Callable, Coroutine, Mapping, Sequence
-from functools import wraps
 from http import HTTPStatus
-from inspect import signature
-from typing import Any, Never
 
-from fastapi import HTTPException
-from pydantic_core import ValidationError
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from python3_commons.exceptions import AppError
+
+from fastapi_commons.exceptions import ServiceError
+
+__all__ = ['register_exception_handlers']
 
 logger = logging.getLogger(__name__)
 
 
-def _handle_exceptions_helper(status_code: int, *args: Sequence) -> Never:
-    if args:
-        raise HTTPException(status_code=status_code, detail=args[0])
+def service_error_response(request: Request, exc: ServiceError) -> JSONResponse:
+    """Log a ServiceError and build its response. Shared with UnhandledErrorMiddleware."""
+    status = exc.status_code
+    method = request.method
+    path = request.url.path
 
-    raise HTTPException(status_code=status_code)
+    if status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        logger.error('%s %s -> %d: %s', method, path, status, type(exc).__name__, exc_info=exc)
+        detail = status.phrase
+    else:
+        detail = exc.detail or status.phrase
+        logger.warning('%s %s -> %d: %s: %s', method, path, status, type(exc).__name__, detail)
+
+    return JSONResponse({'detail': detail}, status_code=status, headers=exc.headers)
 
 
-def handle_exceptions[T](func: Callable[..., Coroutine[Any, Any, T]]) -> Callable[..., Coroutine[Any, Any, T]]:
-    signature(func)
+async def _service_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    if not isinstance(exc, ServiceError):  # pragma: no cover
+        raise exc
 
-    @wraps(func)
-    async def wrapper(*args: Sequence, **kwargs: Mapping) -> T:
-        try:
-            result = await func(*args, **kwargs)
-        except AppError as e:
-            msg = f'Application error: {e!s}'
-            logger.exception(msg)
+    return service_error_response(request, exc)
 
-            result = _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
-        except PermissionError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
 
-            result = _handle_exceptions_helper(HTTPStatus.UNAUTHORIZED, *e.args)
-        except LookupError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
+async def _app_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    logger.error('%s %s -> 500: %s', request.method, request.url.path, type(exc).__name__, exc_info=exc)
 
-            result = _handle_exceptions_helper(HTTPStatus.NOT_FOUND, *e.args)
-        except ValidationError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
+    return JSONResponse({'detail': 'Internal Server Error'}, status_code=500)
 
-            result = _handle_exceptions_helper(HTTPStatus.INTERNAL_SERVER_ERROR, *e.args)
-        except ConnectionRefusedError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
 
-            result = _handle_exceptions_helper(HTTPStatus.SERVICE_UNAVAILABLE, *e.args)
-        except ValueError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
+def register_exception_handlers(app: FastAPI) -> None:
+    """Register handlers for ServiceError and AppError unless the app already has its own."""
+    if ServiceError not in app.exception_handlers:
+        app.add_exception_handler(ServiceError, _service_error_handler)
 
-            result = _handle_exceptions_helper(HTTPStatus.BAD_REQUEST, *e.args)
-        except NotImplementedError as e:
-            msg = f'{type(e)}: {e}'
-            logger.exception(msg)
-
-            result = _handle_exceptions_helper(HTTPStatus.NOT_IMPLEMENTED)
-
-        return result
-
-    return wrapper
+    if AppError not in app.exception_handlers:
+        app.add_exception_handler(AppError, _app_error_handler)
