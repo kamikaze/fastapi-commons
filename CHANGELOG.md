@@ -2,7 +2,22 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses [Semantic Versioning](https://semver.org/) (0.x: a minor release may break the API).
 
-## [0.14.0] - Unreleased
+## [0.14.0] - 2026-11-17
+
+### Changed
+
+- Dependencies:
+  - `fastapi~=0.163.2` (was `~=0.162.2`);
+  - `python3-commons[authn,database]~=0.32.0` (was `~=0.31.0`);
+  - `SQLAlchemy[asyncio]~=2.1.9` (was `~=2.1.8`).
+
+## [0.13.1] - 2026-11-09
+
+### Changed
+
+- Dependency constraints now use compatible-release pins (`~=`), for example `fastapi~=0.162.2` (was `>=0.162.0,<1`). `python3-commons[authn,database]` moves to `~=0.31.0` (was `>=0.30.0,<0.31`).
+
+## [0.13.0] - 2026-11-04
 
 A redesign as a standalone, side-effect-free package. Every breaking change is listed under **Removed** and **Changed**; [MIGRATION.md](MIGRATION.md) shows the replacement code for each.
 
@@ -89,4 +104,4 @@ A redesign as a standalone, side-effect-free package. Every breaking change is l
 
 ## Earlier releases
 
-Releases before 0.14.0 have no entries here; see the git history and the tags.
+Releases before 0.13.0 have no entries here; see the git history and the tags.

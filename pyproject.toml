@@ -1,10 +1,10 @@
 [build-system]
-requires = ["uv_build>=0.13.7,<0.14.0"]
+requires = ["uv_build>=0.13.9,<0.14.0"]
 build-backend = "uv_build"
 
 [project]
 name = "fastapi-commons"
-version = "0.13.1"
+version = "0.14.0"
 description = "Re-usable FastAPI code"
 authors = [
     { name = "Oleg Korsak", email = "kamikaze.is.waiting.you@gmail.com" }
@@ -26,12 +26,12 @@ keywords = ["fastapi", "oidc", "prometheus", "opentelemetry", "middleware"]
 requires-python = ">=3.15"
 dependencies = [
     "aiohttp[speedups]~=3.14.5",
-    "fastapi~=0.162.2",
+    "fastapi~=0.163.2",
     "msgspec~=0.22.0",
     "prometheus-client~=0.26.0",
     "PyJWT[crypto]~=2.15.1",
-    "python3-commons[authn,database]~=0.31.0",
-    "SQLAlchemy[asyncio]~=2.1.8",
+    "python3-commons[authn,database]~=0.32.0",
+    "SQLAlchemy[asyncio]~=2.1.9",
     "starlette~=1.10.0",
 ]
 
